@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%-30(%d [%thread]) %-5level %logger{35} - %replace(%msg){'\n','|'} %xEx%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%-30(%d [%thread]) %-5level %logger{35} - %replace(%msg){'\n','|'} %xEx%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>test-log/%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <root level="TRACE">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE" />
+    </root>
+
+    <!--<logger level="TRACE" name="com.yh.was" additivity="true" />-->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
+        <delay>100</delay>
+    </shutdownHook>
+</configuration>

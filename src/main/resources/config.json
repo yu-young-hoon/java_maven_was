@@ -1,0 +1,40 @@
+[
+  {
+    "host": "simuruk.com",
+    "documentRoot": "D:/project/was/html",
+    "port": 666,
+    "errorDocument": [
+      {
+        "code": 403,
+        "document": "forbidden.html"
+      },
+      {
+        "code": 404,
+        "document": "not_found.html"
+      },
+      {
+        "code": 500,
+        "document": "internal_server_error.html"
+      }
+    ]
+  }
+, {
+  "host": "localhost",
+  "documentRoot": "D:/project/was/html2",
+  "port": 666,
+  "errorDocument": [
+    {
+      "code": 403,
+      "document": "forbidden.html"
+    },
+    {
+      "code": 404,
+      "document": "not_found.html"
+    },
+    {
+      "code": 500,
+      "document": "internal_server_error.html"
+    }
+  ]
+}
+]
