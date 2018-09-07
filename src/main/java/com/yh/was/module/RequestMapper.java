@@ -67,14 +67,8 @@ public class RequestMapper {
                     findMapperForJar(urlConnection, packageName);
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            logger.info("ClassNotFoundException: " + ex);
-        } catch (IOException ex) {
-            logger.info("IOException: " + ex);
-        } catch (IllegalAccessException ex) {
-            logger.info("IllegalAccessException: " + ex);
-        } catch (InstantiationException ex) {
-            logger.info("InstantiationException: " + ex);
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | IOException ex) {
+            logger.error("", ex);
         }
     }
 

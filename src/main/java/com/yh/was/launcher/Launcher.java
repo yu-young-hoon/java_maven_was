@@ -25,10 +25,8 @@ public class Launcher {
 
             HttpServer webserver = new HttpServer(config);
             webserver.start();
-        } catch (JsonReadException ex) {
-            logger.error("Server Launching failed by JsonReadException", ex);
-        } catch (HttpServerException ex) {
-            logger.error("Server Launching failed by HttpServerException", ex);
+        } catch (JsonReadException | HttpServerException ex) {
+            logger.error("", ex);
         }
     }
 }

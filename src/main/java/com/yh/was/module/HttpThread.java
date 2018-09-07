@@ -29,7 +29,7 @@ public class HttpThread extends Thread {
         try {
             server = new ServerSocket(hosts.stream().findFirst().get().getPort());
         } catch (IOException ex) {
-            logger.error("Http server socket create fail", ex);
+            logger.error("", ex);
         }
         while (true) {
             try {
@@ -38,7 +38,7 @@ public class HttpThread extends Thread {
                 Runnable r = new RequestProcessor(con, hosts);
                 httpServer.addWork(r);
             } catch (IOException ex) {
-                logger.error("Request processor create fail", ex);
+                logger.error("", ex);
             }
         }
     }

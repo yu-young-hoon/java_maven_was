@@ -43,7 +43,7 @@ public class ConfigReader {
             Type type = new TypeToken<List<Host>>(){}.getType();
             List<Host> hostList = gson.fromJson(sb.toString(), type);
             config.setHosts(hostList);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             throw new JsonReadException("Json parsing error", ex);
         }
 

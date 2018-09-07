@@ -1,10 +1,7 @@
 package com.yh.was.module;
 
 import com.yh.was.config.Host;
-import com.yh.was.error.ForbiddenErrorException;
-import com.yh.was.error.HttpServerException;
-import com.yh.was.error.NotFoundErrorException;
-import com.yh.was.error.RequestFactoryErrorException;
+import com.yh.was.error.*;
 import com.yh.was.interfaces.IServlet;
 import com.yh.was.response.ResponseStatus;
 import org.slf4j.Logger;
@@ -28,20 +25,20 @@ import java.util.stream.Collectors;
  */
 public class RequestProcessor implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
-    private Socket connection;
+    private Socket mConnection;
     private List<Host> hosts;
     Host vhost;
 
     public RequestProcessor(Socket request, List<Host> hosts) {
-        this.connection = request;
+        this.mConnection = request;
         this.hosts = hosts;
     }
 
     public void run() {
         HttpResponse response = null;
-        vhost = hosts.get(0);;
-        try {
-            logger.info("Request processing start", connection);
+        vhost = hosts.get(0);
+        try(Socket connection = this.mConnection;) {
+            logger.info("Request processing start");
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
             response = HttpResponseFactory.getInstance().create(out);
@@ -85,24 +82,15 @@ public class RequestProcessor implements Runnable {
                 else // 파일이 있을 경우
                     writeFileForResponse(response, path);
             }
-        } catch (ForbiddenErrorException ex) {
-            response.setStatus(ResponseStatus.Forbidden);
-            logger.error("Request forbidden access error", ex);
-        } catch (NotFoundErrorException ex) {
-            response.setStatus(ResponseStatus.NotFound);
-            logger.error("Request not found static file", ex);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (ForbiddenErrorException | NotFoundErrorException ex) {
+            response.setStatus(ex.getHttpCode());
+            logger.error("", ex);
+        } catch (UnsupportedEncodingException | RequestFactoryErrorException ex) {
             response.setStatus(ResponseStatus.InternalServerError);
-            logger.error("Request socket encoding error", ex);
+            logger.error("", ex);
         } catch (IOException ex) {
             response.setStatus(ResponseStatus.InternalServerError);
-            logger.error("Request socket io error", ex);
-        }  catch (RequestFactoryErrorException ex) {
-            response.setStatus(ResponseStatus.InternalServerError);
-            logger.error("Request create fail", ex);
-        } catch (Exception ex) {
-            response.setStatus(ResponseStatus.InternalServerError);
-            logger.error("Request fail", ex);
+            logger.error("", ex);
         } finally {
             try {
                 if(response != null) {
@@ -111,9 +99,8 @@ public class RequestProcessor implements Runnable {
                     // 헤더와 메시지를 전송합니다.
                     response.sendAll();
                 }
-                connection.close();
             } catch (IOException ex) {
-                logger.error("Request socket close error", ex);
+                logger.error("", ex);
             }
         }
     }
